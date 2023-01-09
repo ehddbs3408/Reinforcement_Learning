@@ -48,10 +48,24 @@ namespace Reinforcement_Learning
                     StateValueFuction.Add(i * 3 + 1, 0.0f); // 검은돌 차례 때 상태를 가치 함수로 저장
                     StateValueFuction.Add(i * 3 + 2, 0.0f); // 한얀돌 차례 떄 상태를 가치함수로 저장
 
+                    if(state.NumberOfBlacks == 4 && state.NumberOfWhites == 4)
+                    {
+                        num44++;
+                    }
                 }
                 else if(state.IsValidFirsStage())
                 {
                     StateValueFuction.Add(i * 3 + state.GetFirstStageTurn(),0.0f);
+
+                    if (state.NumberOfBlacks == 0 && state.NumberOfWhites == 0) num00++;
+                    if (state.NumberOfBlacks == 1 && state.NumberOfWhites == 0) num10++;
+                    if (state.NumberOfBlacks == 1 && state.NumberOfWhites == 1) num11++;
+                    if (state.NumberOfBlacks == 2 && state.NumberOfWhites == 1) num21++;
+                    if (state.NumberOfBlacks == 2 && state.NumberOfWhites == 2) num22++;
+                    if (state.NumberOfBlacks == 3 && state.NumberOfWhites == 2) num32++;
+                    if (state.NumberOfBlacks == 3 && state.NumberOfWhites == 3) num33++;
+                    if (state.NumberOfBlacks == 4 && state.NumberOfWhites == 3) num43++;
+                    if (state.NumberOfBlacks == 4 && state.NumberOfWhites == 4) num44++;
                 }
             }
 
