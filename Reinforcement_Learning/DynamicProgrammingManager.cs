@@ -42,6 +42,17 @@ namespace Reinforcement_Learning
             {
                 GameState state = new GameState();
                 state.PopulateBoard(i);
+
+                if(state.IsValidSecondStage())
+                {
+                    StateValueFuction.Add(i * 3 + 1, 0.0f); // 검은돌 차례 때 상태를 가치 함수로 저장
+                    StateValueFuction.Add(i * 3 + 2, 0.0f); // 한얀돌 차례 떄 상태를 가치함수로 저장
+
+                }
+                else if(state.IsValidFirsStage())
+                {
+                    StateValueFuction.Add(i * 3 + state.GetFirstStageTurn(),0.0f);
+                }
             }
 
             Console.WriteLine(Environment.NewLine);

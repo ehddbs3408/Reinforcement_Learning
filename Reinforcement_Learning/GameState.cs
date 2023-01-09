@@ -49,5 +49,31 @@ namespace Reinforcement_Learning
             }
         
         }
+        internal int GetFirstStageTurn()
+        {
+            if (NumberOfWhites == NumberOfBlacks) return 1;
+            if (NumberOfBlacks == NumberOfWhites + 1) return 2;
+
+            return 0;
+        }
+
+        internal bool IsValidFirsStage()
+        {
+            if (NumberOfBlacks > 4) return false;
+            if (NumberOfWhites > 3) return false;
+
+            if(NumberOfWhites == NumberOfBlacks || NumberOfBlacks == NumberOfWhites + 1)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        internal bool IsValidSecondStage()
+        {
+            if (NumberOfBlacks == 4 && NumberOfWhites == 4) return true;
+            return false;
+        }
     }
 }
