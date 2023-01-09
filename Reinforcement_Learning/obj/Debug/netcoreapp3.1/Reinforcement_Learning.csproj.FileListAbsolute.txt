@@ -1,0 +1,14 @@
+C:\Users\USER\source\repos\Reinforcement_Learning\Reinforcement_Learning\bin\Debug\netcoreapp3.1\Reinforcement_Learning.exe
+C:\Users\USER\source\repos\Reinforcement_Learning\Reinforcement_Learning\bin\Debug\netcoreapp3.1\Reinforcement_Learning.deps.json
+C:\Users\USER\source\repos\Reinforcement_Learning\Reinforcement_Learning\bin\Debug\netcoreapp3.1\Reinforcement_Learning.runtimeconfig.json
+C:\Users\USER\source\repos\Reinforcement_Learning\Reinforcement_Learning\bin\Debug\netcoreapp3.1\Reinforcement_Learning.runtimeconfig.dev.json
+C:\Users\USER\source\repos\Reinforcement_Learning\Reinforcement_Learning\bin\Debug\netcoreapp3.1\Reinforcement_Learning.dll
+C:\Users\USER\source\repos\Reinforcement_Learning\Reinforcement_Learning\bin\Debug\netcoreapp3.1\Reinforcement_Learning.pdb
+C:\Users\USER\source\repos\Reinforcement_Learning\Reinforcement_Learning\obj\Debug\netcoreapp3.1\Reinforcement_Learning.csproj.AssemblyReference.cache
+C:\Users\USER\source\repos\Reinforcement_Learning\Reinforcement_Learning\obj\Debug\netcoreapp3.1\Reinforcement_Learning.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\USER\source\repos\Reinforcement_Learning\Reinforcement_Learning\obj\Debug\netcoreapp3.1\Reinforcement_Learning.AssemblyInfoInputs.cache
+C:\Users\USER\source\repos\Reinforcement_Learning\Reinforcement_Learning\obj\Debug\netcoreapp3.1\Reinforcement_Learning.AssemblyInfo.cs
+C:\Users\USER\source\repos\Reinforcement_Learning\Reinforcement_Learning\obj\Debug\netcoreapp3.1\Reinforcement_Learning.csproj.CoreCompileInputs.cache
+C:\Users\USER\source\repos\Reinforcement_Learning\Reinforcement_Learning\obj\Debug\netcoreapp3.1\Reinforcement_Learning.dll
+C:\Users\USER\source\repos\Reinforcement_Learning\Reinforcement_Learning\obj\Debug\netcoreapp3.1\Reinforcement_Learning.pdb
+C:\Users\USER\source\repos\Reinforcement_Learning\Reinforcement_Learning\obj\Debug\netcoreapp3.1\Reinforcement_Learning.genruntimeconfig.cache
