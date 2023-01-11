@@ -11,12 +11,14 @@ namespace Reinforcement_Learning
 		public static DynamicProgrammingManager DPManager;
 		public static GameManager GonuGameManager;
 		public static SarsaManager sarsaManager;
+		public static QLearning qLearning;
 
 		static void Main(string[] args)
 		{
 			DPManager = new DynamicProgrammingManager();
 			GonuGameManager = new GameManager();
 			sarsaManager = new SarsaManager();
+			qLearning = new QLearning();
 
 			bool showMenu = true;
 
@@ -47,7 +49,7 @@ namespace Reinforcement_Learning
 					sarsaManager.UpdateBySarsa();
 					return true;
 				case "3":
-			
+					qLearning.UpdateByQLearning();
 					return true;
 				case "4":
 					GonuGameManager.PlayGame();

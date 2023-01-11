@@ -11,6 +11,7 @@ namespace Reinforcement_Learning
 		DynamicProgramming,
 		Human,
 		SARSA,
+		QLearning,
 		None
 	}
 
@@ -63,9 +64,10 @@ namespace Reinforcement_Learning
 				Console.WriteLine(Environment.NewLine);
 				Console.WriteLine("1) 동적프로그래밍");
 				Console.WriteLine("2) SARSA");
-				Console.WriteLine("3) 사람");
-				Console.WriteLine("4) 게임 종료");
-				Console.Write("선택 (1-4):");
+                Console.WriteLine("3) QLearning");
+				Console.WriteLine("4) 사람");
+				Console.WriteLine("5) 게임 종료");
+				Console.Write("선택 (1-5):");
 
 				switch (Console.ReadLine())
 				{
@@ -90,12 +92,18 @@ namespace Reinforcement_Learning
 						Console.ReadLine();
 						return GamePlayer.SARSA;
 					case "3":
+						Console.Write("QLearning를 선택하셨습니다..");
+						Console.WriteLine(Environment.NewLine);
+						Console.Write("아무 키나 누르세요:");
+						Console.ReadLine();
+						return GamePlayer.QLearning;
+					case "4":
 						Console.Write("사람을 선택하셨습니다..");
 						Console.WriteLine(Environment.NewLine);
 						Console.Write("아무 키나 누르세요:");
 						Console.ReadLine();
 						return GamePlayer.Human;
-					case "4":
+					case "5":
 						Console.Write("메인 메뉴로 돌아갑니다..");
 						Console.WriteLine(Environment.NewLine);
 						Console.Write("아무 키나 누르세요:");
@@ -151,6 +159,8 @@ namespace Reinforcement_Learning
 							gameMove = Program.DPManager.GetNextMove(gameState.BoardStateKey);
 						else if (playerforNextTurn == GamePlayer.SARSA)
 							gameMove = Program.sarsaManager.GetNextMove(gameState.BoardStateKey);
+						else if (playerforNextTurn == GamePlayer.QLearning)
+							gameMove = Program.qLearning.GetNextMove(gameState.BoardStateKey);
 					}
 
 					// 게임 보드에 행동 적용

@@ -55,7 +55,6 @@ namespace Reinforcement_Learning
 			return actionValues;
 		}
 
-
 		public static Random random = new Random();
 
 		public static int GetEpsilonGreedyAction(int turn, Dictionary<int, float> actionValues)
@@ -123,5 +122,20 @@ namespace Reinforcement_Learning
 
             return actionValues.Where(e => e.Value == greedyActionValue).Select(e => e.Key);
         }
-    }
+
+		public static float GetGreedyActionValue(int turn,Dictionary<int,float> actionValues)
+        {
+			if (actionValues.Count == 0)
+				return 0.0f;
+
+			if(turn == 1)
+            {
+				return actionValues.Select(e => e.Value).Max();
+;            }else if(turn == 2)
+				return actionValues.Select(e => e.Value).Min();
+
+			return 0.0f;
+		}
+
+	}
 }

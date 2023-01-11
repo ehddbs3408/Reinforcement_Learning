@@ -4,50 +4,43 @@ using System.Text;
 
 namespace Reinforcement_Learning
 {
-    
-    class SarsaManager
+    class QLearning
     {
-        public Dictionary<int, Dictionary<int, float>> ActionValueFunction;
-        public float DiscountFactor = 0.9f; //감가율
-        public float UpdateStep = 0.01f; //예상해나가는 값
+		public Dictionary<int, Dictionary<int, float>> ActionValueFunction;
+		public float DiscountFactor = 0.9f; //감가율
+		public float UpdateStep = 0.01f; //예상해나가는 값
 
-        public SarsaManager()
-        {
+		public QLearning()
+		{
 			//상태 가치 함수 생성
 			ActionValueFunction = new Dictionary<int, Dictionary<int, float>>();
-        }
+		}
 
-        public void UpdateBySarsa()
-        {
-            InitializeValueFunction();
-            ApplySarsa();
-        }
+		public void UpdateByQLearning()
+		{
+			InitializeValueFunction();
+			ApplyQLearning();
+		}
 
-        public void InitializeValueFunction()
-        {
-            Console.Clear();
-            Console.WriteLine("SARSA 시작");
-            Console.WriteLine("가치 함수 초기화");
+		public void InitializeValueFunction()
+		{
+			Console.Clear();
+			Console.WriteLine("QLearning 시작");
+			Console.WriteLine("가치 함수 초기화");
 
 			ActionValueFunction.Clear();
 			ActionValueFunction = Utilities.CreateActionValueFunction();
 
-            Console.WriteLine(Environment.NewLine);
-            Console.WriteLine("가치함수 초기화 완료");
+			Console.WriteLine(Environment.NewLine);
+			Console.WriteLine("가치함수 초기화 완료");
 
-            Console.WriteLine(Environment.NewLine);
-            Console.WriteLine("아무키나 놀러주세요");
-            Console.ReadLine();
-        }
+			Console.WriteLine(Environment.NewLine);
+			Console.WriteLine("아무키나 놀러주세요");
+			Console.ReadLine();
+		}
 
-        public int GetNextMove(int boardStateKey)
+		public void ApplyQLearning()
         {
-            GameState gameState = new GameState(boardStateKey);
-            return Utilities.GetGreedyAction(gameState.NextTurn, ActionValueFunction[boardStateKey]);
-        }
-
-		public void ApplySarsa()
-		{
 			Console.Clear();
 			Console.WriteLine("가치 함수 업데이트 시작");
 			Console.WriteLine(Environment.NewLine);
@@ -70,11 +63,6 @@ namespace Reinforcement_Learning
 					// 선택된 행동을 통해 전이해 간 두번째 상태 생성
 					GameState secondState = firstState.GetNextState(firstAction);
 
-					int secondAction // Epsilon 탐욕 정책으로 두번째 행동 선택
-						= Utilities.GetEpsilonGreedyAction(
-															secondState.NextTurn,
-															ActionValueFunction[secondState.BoardStateKey]);
-
 					// 두번째 상태에 대한 보상 계산
 					float reward = secondState.GetReward();
 
@@ -82,9 +70,7 @@ namespace Reinforcement_Learning
 					float firstStateActionValue = ActionValueFunction[firstState.BoardStateKey][firstAction];
 
 					// 두번째 상태, 행동에 대한 가치 함수값
-					float secondStateActionValue = 0.0f;
-					if (secondAction != 0)
-						secondStateActionValue = ActionValueFunction[secondState.BoardStateKey][secondAction];
+					float secondStateActionValue = Utilities.GetGreedyActionValue(secondState.NextTurn,ActionValueFunction[secondState.BoardStateKey]);
 
 					// 가치 함수 업데이트
 					float _reward = (reward + DiscountFactor * secondStateActionValue - firstStateActionValue);
@@ -117,8 +103,16 @@ namespace Reinforcement_Learning
 			}
 
 			Console.WriteLine(Environment.NewLine);
-			Console.Write("SARSA를 종료합니다. 아무 키나 누르세요:");
+			Console.Write("QLearning을 종료합니다. 아무 키나 누르세요:");
 			Console.ReadLine();
 		}
+
+		public int GetNextMove(int boardStateKey)
+		{
+			GameState gameState = new GameState(boardStateKey);
+			return Utilities.GetGreedyAction(gameState.NextTurn, ActionValueFunction[boardStateKey]);
+		}
+
+		
 	}
 }
