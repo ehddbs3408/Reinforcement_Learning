@@ -26,6 +26,7 @@ namespace Reinforcement_Learning
             StateValueFunction = new Dictionary<int, float>();
         }
 
+
         public void UpdateByDynamicProgramming()
         {
             InitializeValueFunction();
@@ -46,15 +47,15 @@ namespace Reinforcement_Learning
                 GameState state = new GameState();
                 state.PopulateBoard(i);
 
-                if (state.IsValidSecondStage())
+                if (state.IsValidSecondStage()) // 2단계 게임 보드일 경우
                 {
-                    StateValueFunction.Add(i * 3 + 1, 0.0f);
-                    StateValueFunction.Add(i * 3 + 2, 0.0f);
+                    StateValueFunction.Add(i * 3 + 1, 0.0f); // 흑돌이 둘 차례인 상태를 가치 함수 엔트리로 추가
+                    StateValueFunction.Add(i * 3 + 2, 0.0f); // 백돌이 둘 차례인 상태를 가치 함수 엔트리로 추가
 
                     if (state.NumberOfBlacks == 4 && state.NumberOfWhites == 4)
                         num44++;
                 }
-                else if (state.IsValidFirstStage())
+                else if (state.IsValidFirstStage()) // 1단계 게임 보드일 경우
                 {
                     StateValueFunction.Add(i * 3 + state.GetFirstStageTurn(), 0.0f);
 
@@ -99,7 +100,7 @@ namespace Reinforcement_Learning
         public void ApplyDynamicProgramming()
         {
             Console.Clear();
-            Console.WriteLine("동적 프로그래밍 학습");
+            Console.WriteLine("동적 프로그래밍 적용");
             Console.WriteLine(Environment.NewLine);
 
             int loopCount = 0;
@@ -107,111 +108,78 @@ namespace Reinforcement_Learning
 
             while (!terminateLoop)
             {
+                // 업데이트되는 가치 함수값을 임시로 저장하기 위한 dictionary
                 Dictionary<int, float> nextStateValueFunction = new Dictionary<int, float>();
 
+                // 동적 프로그래밍 각 단계에서 함수값이 업데이트된 크기
                 float valueFunctionUpdateAmount = 0.0f;
 
+                // 가치 함수 업데이트 루프
                 foreach (KeyValuePair<int, float> valueFunctionEntry in StateValueFunction)
                 {
+                    // 가치 함수 업데이트 계산
                     float updatedValue = UpdateValueFunction(valueFunctionEntry.Key);
-                    float updateAmount = Math.Abs(valueFunctionEntry.Value - updatedValue);
+                    // 업데이트 크기
+                    float updatedAmount = Math.Abs(valueFunctionEntry.Value - updatedValue);
+                    // 가치 함수 업데이트
                     nextStateValueFunction[valueFunctionEntry.Key] = updatedValue;
-                    if (updateAmount > valueFunctionUpdateAmount)
-                    {
-                        valueFunctionUpdateAmount = updateAmount;
-                    }
+
+                    // 루프를 돌면서 함수가 업데이트된 크기를 기록
+                    if (updatedAmount > valueFunctionUpdateAmount)
+                        valueFunctionUpdateAmount = updatedAmount;
                 }
 
+                // 가치 함수값을 임시 저장 가치 함수로 변경
                 StateValueFunction = new Dictionary<int, float>(nextStateValueFunction);
+
                 loopCount++;
+                Console.WriteLine($"동적 프로그래밍 {loopCount}회 수행, 업데이트 오차 {valueFunctionUpdateAmount}");
 
-                Console.WriteLine($"동적 프로그래밍 {loopCount}회 수행, 업데이트 오차{valueFunctionUpdateAmount}");
-
-                if (valueFunctionUpdateAmount < 0.01f) terminateLoop = true;
-
+                if (valueFunctionUpdateAmount < 0.01f) // 업데이트 크기가 충분히 작으면 루프 종료
+                    terminateLoop = true;
             }
 
             Console.WriteLine(Environment.NewLine);
-            Console.Write("아무 키나 누르세요");
+            Console.Write("아무 키나 누르세요:");
             Console.ReadLine();
-
         }
 
         public float UpdateValueFunction(int gameStateKey)
         {
+            // 주어진 게임 상태 키에 대해 게임 상태 생성
             GameState gameState = new GameState(gameStateKey);
-            if (gameState.isFinalState()) return 0.0f;
 
-            List<float> actionExpecatationList = new List<float>();
+            if (gameState.isFinalState()) // 게임 종료 상태이면 함수값 0 반환
+                return 0.0f;
 
+            List<float> actionExpectationList = new List<float>();
+
+            // 1부터 9까지의 모든 행동에 대해
             for (int i = GameParameters.ActionMinIndex; i <= GameParameters.ActionMaxIndex; i++)
             {
-                if (gameState.IsValidMove(i))
+                if (gameState.IsValidMove(i)) // 이 행동이 올바른 행동이면
                 {
-                    GameState nextState = gameState.GetNextState(i);
-                    float reward = nextState.GetReward();
+                    GameState nextState = gameState.GetNextState(i); // 행동을 통해 전이해 간 다음 상태 구성
+                    float reward = nextState.GetReward(); // 다음 상태에서의 보상값 확인
 
+                    // 행동 가치 함수값 계산
                     float actionExpectation = reward + DiscountFactor * StateValueFunction[nextState.BoardStateKey];
 
-                    actionExpecatationList.Add(actionExpectation);
+                    actionExpectationList.Add(actionExpectation); // 계산된 가치 함수값을 저장
                 }
             }
 
-            if (actionExpecatationList.Count > 0)
+            if (actionExpectationList.Count > 0) // 루프 종료 후 반환할 가치 함수값 선택
             {
-                if (gameState.NextTurn == 1) return actionExpecatationList.Max();
-                else if (gameState.NextTurn == 2) return actionExpecatationList.Min();
+                if (gameState.NextTurn == 1) // 흑돌이 둘 차례이면 저장된 가치 함수값 중 최대값 반환
+                    return actionExpectationList.Max();
+                else if (gameState.NextTurn == 2) // 백돌이 둘 차례이면 저장된 가치 함수값 중 최소값 반환
+                    return actionExpectationList.Min();
             }
-
             return 0.0f;
-
         }
 
-        public int GetNextMove(int boardStatekey)
-        {
-            IEnumerable<int> actionCandiate = GetNextMoveCandiate(boardStatekey);
 
-            if(actionCandiate.Count() == 0)
-            {
-                return 0;
-            }
-
-            return actionCandiate.ElementAt(new Random().Next(0, actionCandiate.Count()));
-        }
-
-        public IEnumerable<int> GetNextMoveCandiate(int boardStatekey)
-        {
-            float selectedExpection = 0.0f;
-
-            GameState gameState = new GameState(boardStatekey);
-            Dictionary<int, float> actionCandiateDictionary = new Dictionary<int, float>();
-
-            for (int i = GameParameters.ActionMinIndex; i < GameParameters.ActionMaxIndex; i++)
-            {
-                if (gameState.IsValidMove(i))
-                {
-                    GameState nextState = gameState.GetNextState(i);
-                    float reward = nextState.GetReward();
-
-                    float actionExpection = reward + DiscountFactor * StateValueFunction[nextState.BoardStateKey];
-
-                    actionCandiateDictionary.Add(i, actionExpection);
-                }
-            }
-
-            if (actionCandiateDictionary.Count == 0) return new List<int>();
-
-            if(gameState.NextTurn == 1)
-            {
-                selectedExpection = actionCandiateDictionary.Select(e => e.Value).Max();
-            }
-            else if(gameState.NextTurn == 2)
-            {
-                selectedExpection = actionCandiateDictionary.Select(e => e.Value).Min();
-            }
-
-            return actionCandiateDictionary.Where(e => e.Value == selectedExpection).Select(e => e.Key);
-        }
 
         private void StateCountReset()
         {
@@ -226,5 +194,57 @@ namespace Reinforcement_Learning
             num44 = 0;
         }
 
+
+        public int GetNextMove(int boardStateKey)
+        {
+            // 주어진 게임 상태에 대해서 선택할 수 있는 행동 후보값을 구한 후,
+            IEnumerable<int> actionCandidates = GetNextMoveCandidate(boardStateKey);
+            if (actionCandidates.Count() == 0)
+                return 0;
+
+            // 그 중 한 값을 랜덤하게 선택해서 반환
+            return actionCandidates.ElementAt(new Random().Next(0, actionCandidates.Count()));
+        }
+
+
+        public IEnumerable<int> GetNextMoveCandidate(int boardStateKey)
+        {
+            float selectedExpectation = 0.0f;
+
+            // 주어진 상태에 대한 게임 상태 생성
+            GameState gameState = new GameState(boardStateKey);
+            Dictionary<int, float> actionCandidateDictionary = new Dictionary<int, float>();
+
+            // 1부터 9까지의 모든 행동에 대해
+            for (int i = GameParameters.ActionMinIndex; i <= GameParameters.ActionMaxIndex; i++)
+            {
+                if (gameState.IsValidMove(i)) // 이 행동에 이 상태에 적용 가능한 올바른 행동인 경우
+                {
+                    GameState nextState = gameState.GetNextState(i); //그 행동을 통해 전이해가는 상태를 구하고
+                    float reward = nextState.GetReward(); // 그 전이해 간 상태에서의 보상값
+
+                    // 행동 가치 함수값 계산
+                    float actionExpectation = reward + DiscountFactor * StateValueFunction[nextState.BoardStateKey];
+
+                    // 행동과 그 행동에 대한 행동 가치 함수값을 저장
+                    actionCandidateDictionary.Add(i, actionExpectation);
+                }
+            }
+
+            if (actionCandidateDictionary.Count == 0)
+                return new List<int>();
+
+            if (gameState.NextTurn == 1) // 흑돌 차례인 경우 저장된 행동 가치 함수값 중 최대값을 선택
+            {
+                selectedExpectation = actionCandidateDictionary.Select(e => e.Value).Max();
+            }
+            else if (gameState.NextTurn == 2) // 백돌 차례인 경우 저장된 행동 가치 함수값 중 최소값 선택
+            {
+                selectedExpectation = actionCandidateDictionary.Select(e => e.Value).Min();
+            }
+
+            // 선택한 가치 함수값을 가지는 행동들을 모두 모아서 반환
+            return actionCandidateDictionary.Where(e => e.Value == selectedExpectation).Select(e => e.Key);
+        }
     }
 }

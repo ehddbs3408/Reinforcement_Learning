@@ -9,12 +9,14 @@ namespace Reinforcement_Learning
 	class Program
 	{
 		public static DynamicProgrammingManager DPManager;
-		public static GameManager gameManager;
+		public static GameManager GonuGameManager;
+		public static SarsaManager sarsaManager;
 
 		static void Main(string[] args)
 		{
 			DPManager = new DynamicProgrammingManager();
-			gameManager = new GameManager();
+			GonuGameManager = new GameManager();
+			sarsaManager = new SarsaManager();
 
 			bool showMenu = true;
 
@@ -23,15 +25,16 @@ namespace Reinforcement_Learning
 				showMenu = MainMenu();
 			}
 		}
-
 		private static bool MainMenu()
 		{
 			Console.Clear();
 			Console.WriteLine("원하는 동작을 선택하세요:");
 			Console.WriteLine(Environment.NewLine);
 			Console.WriteLine("1) 동적프로그래밍 진행");
-			Console.WriteLine("2) 게임 하기");
-			Console.WriteLine("3) 프로그램 종료");
+            Console.WriteLine("2) SARSA");
+            Console.WriteLine("3) Q-Learnning");
+			Console.WriteLine("4) 게임 하기");
+			Console.WriteLine("5) 프로그램 종료");
 			Console.WriteLine(Environment.NewLine);
 			Console.Write("동작 선택:");
 
@@ -41,15 +44,19 @@ namespace Reinforcement_Learning
 					DPManager.UpdateByDynamicProgramming();
 					return true;
 				case "2":
-					gameManager.PlayGame();
+					sarsaManager.UpdateBySarsa();
 					return true;
 				case "3":
+			
+					return true;
+				case "4":
+					GonuGameManager.PlayGame();
+					return true;
+				case "5":
 					return false;
 				default:
 					return true;
 			}
 		}
-
-		
 	}
 }
